@@ -1,9 +1,11 @@
-import { Container, createTheme, CssBaseline, ThemeProvider } from "@mui/material";
+import { Container, createTheme, CssBaseline, Switch, ThemeProvider } from "@mui/material";
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Header from "./Header";
 import "react-toastify/dist/ReactToastify.css"
+import HomePage from "../../features/home/HomePage";
+import Catalog from "../../features/catalog/Catalog";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
