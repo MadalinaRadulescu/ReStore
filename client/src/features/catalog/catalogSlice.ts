@@ -14,7 +14,7 @@ interface CatalogState {
     metaData: MetaData | null;
 }
 
-const productAdaptor = createEntityAdapter<Product>();
+const productsAdaptor = createEntityAdapter<Product>();
 
 function getAxiosParams(productParams: ProductParams){
     const params = new URLSearchParams();
@@ -35,7 +35,7 @@ export const fetchProductsAsync = createAsyncThunk<Product[], void, {state: Root
         try {
             const response = await agent.Catalog.list(params);
             thunkApi.dispatch(setMetaData(response.metaData));
-            return response.items;
+            return response;
         } catch (error: any) {
             return thunkApi.rejectWithValue({error: error.data})
         }
@@ -76,7 +76,7 @@ function initParams(){
 
 export const catalogSlice = createSlice({
     name: 'catalog', 
-    initialState: productAdaptor.getInitialState<CatalogState>({
+    initialState: productsAdaptor.getInitialState<CatalogState>({
         productsLoaded: false,
         filtersLoaded: false,
         status: 'idle',
@@ -106,9 +106,10 @@ export const catalogSlice = createSlice({
             state.status = 'pendingFetchProducts';
         });
         builder.addCase(fetchProductsAsync.fulfilled, (state, action) => {
-            productAdaptor.setAll(state, action.payload);
+            productsAdaptor.setAll(state, action.payload);
             state.status = 'idle';
             state.productsLoaded = true;
+            
         });
         builder.addCase(fetchProductsAsync.rejected, (state, action) => {
             console.log(action.payload)
@@ -118,7 +119,7 @@ export const catalogSlice = createSlice({
             state.status = 'pendingFetchProduct';
         });
         builder.addCase(fetchProductAsync.fulfilled, (state, action) => {
-            productAdaptor.upsertOne(state, action.payload);
+            productsAdaptor.upsertOne(state, action.payload);
             state.status = 'idle';
         });
         builder.addCase(fetchProductAsync.rejected, (state, action) => {
@@ -141,6 +142,6 @@ export const catalogSlice = createSlice({
     })
 })
 
-export const productSelectors = productAdaptor.getSelectors((state: RootState) => state.catalog);
+export const productSelectors = productsAdaptor.getSelectors((state: RootState) => state.catalog);
 
 export const {setProductParams, resetProductParams, setMetaData, setPageNumber} = catalogSlice.actions;
