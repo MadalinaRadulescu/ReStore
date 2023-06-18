@@ -1,6 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import {toast} from "react-toastify";
-import { getConfigFileParsingDiagnostics } from "typescript";
 import { PaginatedResponse } from "../models/pagination";
 import { router } from "../router/Routes";
 import { store } from "../store/configureStore";
